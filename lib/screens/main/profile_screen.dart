@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -54,14 +55,17 @@ class ProfileScreen extends GetView<ProfileController> {
             children: [
               Obx(
                 () {
-                  if (controller.user.value != null) {
-                    if (controller.pickedImage.value != null) {
+                  if (controller.user != null) {
+                    if (controller.pickedImagePath != null) {
                       return SizedBox(
                         width: 60,
                         height: 60,
                         child: CircleAvatar(
-                          backgroundImage:
-                              FileImage(controller.pickedImage.value!),
+                          backgroundImage: FileImage(
+                            File(
+                              controller.pickedImagePath!,
+                            ),
+                          ),
                           radius: 60,
                         ),
                       );
@@ -70,8 +74,7 @@ class ProfileScreen extends GetView<ProfileController> {
                       width: 60,
                       height: 60,
                       child: CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(controller.user.value!.avatar),
+                        backgroundImage: NetworkImage(controller.user!.avatar),
                         radius: 60,
                       ),
                     );
@@ -107,7 +110,7 @@ class ProfileScreen extends GetView<ProfileController> {
                     children: [
                       Obx(
                         () => Text(
-                          controller.user.value?.fullName ?? '',
+                          controller.user?.fullName ?? '',
                           style: GoogleFonts.montserrat(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
@@ -270,6 +273,7 @@ class ProfileScreen extends GetView<ProfileController> {
               onPressed: () {
                 controller.signOut();
               },
+              hasBottomBorder: false,
               textColor: Colors.red,
               icon: SvgPicture.asset('assets/images/log-out.svg'),
               text: 'logout'.tr,

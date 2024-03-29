@@ -17,15 +17,16 @@ class ProfileService {
     required String gender,
     required String address,
     required String email,
-    File? avatar,
+    String? avatar,
   }) async {
+    final avatarFile = avatar != null ? File(avatar) : null;
     final res = await _profileDataSource.updateProfile(
       fullName: fullName,
       phoneNumber: phoneNumber,
       gender: gender,
       address: address,
       email: email,
-      avatar: avatar,
+      avatar: avatarFile,
     );
     return res;
   }

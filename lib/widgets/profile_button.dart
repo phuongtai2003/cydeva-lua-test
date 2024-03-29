@@ -9,11 +9,13 @@ class ProfileButton extends StatelessWidget {
     required this.icon,
     required this.text,
     this.textColor = Colors.black,
+    this.hasBottomBorder = true,
   }) : super(key: key);
   final VoidCallback onPressed;
   final Widget icon;
   final String text;
   final Color textColor;
+  final bool hasBottomBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +26,16 @@ class ProfileButton extends StatelessWidget {
           horizontal: 8,
           vertical: 16,
         ),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.transparent,
-          border: Border(
-            bottom: BorderSide(
-              width: 1,
-              color: GlobalColors.greyColor,
-            ),
-          ),
+          border: hasBottomBorder
+              ? const Border(
+                  bottom: BorderSide(
+                    width: 1,
+                    color: GlobalColors.greyColor,
+                  ),
+                )
+              : null,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,26 +12,32 @@ class ProfileController extends GetxController {
   final ImagePicker _imagePicker;
   final AuthService _authService;
   final ProfileService _profileService;
-  final RxBool isLoading = false.obs;
 
   ProfileController(
     this._authService,
     this._imagePicker,
     this._profileService,
   );
-
-  final Rxn<UserData> user = Rxn<UserData>();
-  final Rxn<File> pickedImage = Rxn<File>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final genderController = TextEditingController();
   final phoneNumController = TextEditingController();
   final addressController = TextEditingController();
-  final RxBool isShowGenderDropdown = false.obs;
-  final Rxn<Gender> selectedGender = Rxn<Gender>();
+
+  final RxBool _isLoading = false.obs;
+  final Rxn<UserData> _user = Rxn<UserData>();
+  final Rxn<String> _pickedImagePath = Rxn<String>();
+  final RxBool _isShowGenderDropdown = false.obs;
+  final Rxn<Gender> _selectedGender = Rxn<Gender>();
+
+  bool get isLoading => _isLoading.value;
+  UserData? get user => _user.value;
+  String? get pickedImagePath => _pickedImagePath.value;
+  bool get isShowGenderDropdown => _isShowGenderDropdown.value;
+  Gender? get selectedGender => _selectedGender.value;
 
   void selectGender(Gender gender) {
-    selectedGender.value = gender;
+    _selectedGender.value = gender;
     switch (gender) {
       case Gender.male:
         genderController.text = 'male'.tr.capitalizeFirst ?? '';
@@ -47,11 +51,11 @@ class ProfileController extends GetxController {
       default:
         genderController.text = 'unknown'.tr.capitalizeFirst ?? '';
     }
-    isShowGenderDropdown.value = false;
+    _isShowGenderDropdown.value = false;
   }
 
   void updateUser(UserData newUser) {
-    user(newUser);
+    _user(newUser);
     nameController.text = newUser.fullName;
     emailController.text = newUser.email;
     genderController.text = newUser.gender.capitalizeFirst ?? '';
@@ -59,16 +63,16 @@ class ProfileController extends GetxController {
     addressController.text = newUser.address;
     switch (newUser.gender) {
       case 'male':
-        selectedGender.value = Gender.male;
+        _selectedGender.value = Gender.male;
         break;
       case 'female':
-        selectedGender.value = Gender.female;
+        _selectedGender.value = Gender.female;
         break;
       case 'unknown':
-        selectedGender.value = Gender.unknown;
+        _selectedGender.value = Gender.unknown;
         break;
       default:
-        selectedGender.value = Gender.unknown;
+        _selectedGender.value = Gender.unknown;
     }
   }
 
@@ -77,8 +81,8 @@ class ProfileController extends GetxController {
         phoneNumController.text.isNotEmpty &&
         addressController.text.isNotEmpty) {
       String gender = 'unknown';
-      isLoading.value = true;
-      switch (selectedGender.value) {
+      _isLoading.value = true;
+      switch (_selectedGender.value) {
         case Gender.male:
           gender = 'male';
           break;
@@ -95,11 +99,11 @@ class ProfileController extends GetxController {
           gender: gender,
           address: addressController.text,
           email: emailController.text,
-          avatar: pickedImage.value,
+          avatar: _pickedImagePath.value,
         );
         if (res != null) {
-          user(res.data);
-          pickedImage(null);
+          _user(res.data);
+          _pickedImagePath(null);
           Get.snackbar(
             'success'.tr,
             'update_profile_success'.tr,
@@ -113,12 +117,12 @@ class ProfileController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
       }
-      isLoading.value = false;
+      _isLoading.value = false;
     }
   }
 
   void enablePickGender() {
-    isShowGenderDropdown.value = !isShowGenderDropdown.value;
+    _isShowGenderDropdown.value = !_isShowGenderDropdown.value;
   }
 
   void pickImage() async {
@@ -127,9 +131,7 @@ class ProfileController extends GetxController {
         source: ImageSource.gallery,
       );
       if (pickedFile != null) {
-        pickedImage.value = File(
-          pickedFile.path,
-        );
+        _pickedImagePath.value = pickedFile.path;
       }
     } catch (e) {
       rethrow;

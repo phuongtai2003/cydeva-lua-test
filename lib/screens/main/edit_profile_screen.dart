@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -66,17 +68,21 @@ class EditProfileScreen extends GetView<ProfileController> {
                             children: [
                               Obx(
                                 () {
-                                  if (controller.user.value != null) {
-                                    if (controller.pickedImage.value != null) {
+                                  if (controller.user != null) {
+                                    if (controller.pickedImagePath != null) {
                                       return CircleAvatar(
                                         backgroundImage: FileImage(
-                                            controller.pickedImage.value!),
+                                          File(
+                                            controller.pickedImagePath!,
+                                          ),
+                                        ),
                                         radius: 60,
                                       );
                                     }
                                     return CircleAvatar(
                                       backgroundImage: NetworkImage(
-                                          controller.user.value!.avatar),
+                                        controller.user!.avatar,
+                                      ),
                                       radius: 60,
                                     );
                                   } else {
@@ -122,7 +128,7 @@ class EditProfileScreen extends GetView<ProfileController> {
               ),
             ),
             Obx(
-              () => controller.isLoading.value
+              () => controller.isLoading
                   ? Container(
                       color: Colors.black.withOpacity(0.1),
                       child: const Center(
@@ -163,7 +169,7 @@ class EditProfileScreen extends GetView<ProfileController> {
       ),
       Obx(
         () => Visibility(
-          visible: !controller.isShowGenderDropdown.value,
+          visible: !controller.isShowGenderDropdown,
           child: Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 18).copyWith(bottom: 32),
@@ -177,7 +183,7 @@ class EditProfileScreen extends GetView<ProfileController> {
       ),
       Obx(
         () => Visibility(
-          visible: !controller.isShowGenderDropdown.value,
+          visible: !controller.isShowGenderDropdown,
           child: Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 18).copyWith(bottom: 32),
@@ -190,7 +196,7 @@ class EditProfileScreen extends GetView<ProfileController> {
       ),
       Obx(
         () => Visibility(
-          visible: controller.isShowGenderDropdown.value,
+          visible: controller.isShowGenderDropdown,
           child: Padding(
             padding:
                 const EdgeInsets.symmetric(horizontal: 18).copyWith(bottom: 18),
@@ -242,7 +248,7 @@ class EditProfileScreen extends GetView<ProfileController> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: controller.selectedGender.value == Gender.male
+                  color: controller.selectedGender == Gender.male
                       ? GlobalColors.greyColor
                       : Colors.white,
                 ),
@@ -269,7 +275,7 @@ class EditProfileScreen extends GetView<ProfileController> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: controller.selectedGender.value == Gender.female
+                  color: controller.selectedGender == Gender.female
                       ? GlobalColors.greyColor
                       : Colors.white,
                 ),
@@ -296,7 +302,7 @@ class EditProfileScreen extends GetView<ProfileController> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: controller.selectedGender.value == Gender.unknown
+                  color: controller.selectedGender == Gender.unknown
                       ? GlobalColors.greyColor
                       : Colors.white,
                 ),

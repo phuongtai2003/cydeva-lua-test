@@ -32,13 +32,8 @@ class AuthService {
         ),
       );
       if (res.statusCode == 200) {
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-
-        await FirebaseAuth.instance.signInWithCredential(credential);
         await _appPrefs.setToken(res.data.token);
+        _googleSignIn.signOut();
         return res.data.data;
       } else {
         return null;

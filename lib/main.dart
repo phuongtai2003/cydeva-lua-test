@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         colorScheme: ColorScheme.fromSeed(seedColor: GlobalColors.primaryColor),
         primaryColor: GlobalColors.primaryColor,
-        useMaterial3: true,
+        useMaterial3: false,
       ),
       debugShowCheckedModeBanner: false,
       getPages: [
